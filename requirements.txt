@@ -1,0 +1,2 @@
+# requirements for running agenda
+django>=1.7
