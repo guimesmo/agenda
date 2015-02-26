@@ -1,0 +1,17 @@
+
+
+                    <td>
+                        {{ event.datetime|date:"d/m/Y"}}
+                        <span class="time">
+                        {{ event.datetime|date:"H:i"}}
+                        </span>
+                    </td>
+                    <td>
+                        <strong>{{ event.name }}</strong>
+                        {% if event.comment %}<br />
+                        {{ event.comment|linebreaksbr }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ event.get_status_display }}
+                    </td>

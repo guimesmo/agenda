@@ -1,0 +1,13 @@
+table th.date{
+    width: 140px;
+}
+table th.event{
+    padding-right:20px;
+}
+table th.status{
+    width: 120px;
+}
+.event_list{
+    padding: 5px;
+    margin-bottom: 15px;
+}

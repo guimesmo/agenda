@@ -1,0 +1,66 @@
+{% load i18n %}<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-3.3.2-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-3.3.2-dist/css/bootstrap-theme.min.css">
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
+    <script src="{{ STATIC_URL }}bootstrap-3.3.2-dist/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+      <div class="container">
+      {% block content %}
+        <h1>{% trans "Wellcome to your Agenda" %}</h1>
+        <div class="event_list delayed">
+            <h4>{% trans "Delayed Jobs" %}</h4>
+            <table class="table">
+                <tr class="danger">
+                {% include "_includes/event_table_header.html" %}
+                </tr>
+                {% for event in delayed %}
+                <tr class="{% cycle "even" event.css_class_by_status %}">
+                {% include "_includes/event_list_row.html" %}
+                </tr>
+                {% empty %}
+                <tr class="info">
+                    <td colspan="4">{% trans "No delays!" %}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="event_list common">
+            <h4>{% trans "Nexts Jobs" %}</h4>
+            <table class="table">
+                {% include "_includes/event_table_header.html" %}
+                {% for event in nexts %}
+                <tr class="{% cycle "even" event.css_class_by_status %}">
+                {% include "_includes/event_list_row.html" %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">{% trans "No future jobs!" %}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="event_list info">
+            <h4>{% trans "Latest Jobs" %}</h4>
+            <table class="table">
+                {% include "_includes/event_table_header.html" %}
+                {% for event in concludeds %}
+                {% include "_includes/event_list_row.html" %}
+                {% empty %}
+                <tr>
+                    <td colspan="4">{% trans "No future jobs!" %}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+      {% endblock %}
+      </div>
+  </body>
+</html>
