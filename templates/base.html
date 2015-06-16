@@ -8,13 +8,37 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery-2.1.1.min.js"></script>
     <script src="{{ STATIC_URL }}bootstrap-3.3.2-dist/js/bootstrap.min.js"></script>
   </head>
   <body>
       <div class="container">
       {% block content %}
         <h1>{% trans "Wellcome to your Agenda" %}</h1>
+        <form class="add_event_form" action="." method="post">
+       		<div class='col-sm-6'>
+           		<div class="form-group">
+		        	<input name="name" class="event_name form-control" placeholder="{% trans "The name of your event here" %}" />
+        		</div>
+        	</div>
+       		<div class='col-sm-4'>
+           		<div class="form-group">
+               		<div class='input-group date' id='datetimepicker1'>
+			        	<input name="datetime" class="event_datetime form-control" />
+                   		<span class="input-group-addon">
+                       		<span class="glyphicon glyphicon-calendar"></span>
+                    	</span>
+                   	</div>
+        		</div>
+        	</div>
+       		<div class='col-sm-2'>
+           		<button type="submit" class="add_button form-control">{% trans "Add" %}</button>
+           	</div>
+	        	
+        </form>
+        </div>
+        <div class="container">
+        
         <div class="event_list delayed">
             <h4>{% trans "Delayed Jobs" %}</h4>
             <table class="table">
@@ -62,5 +86,11 @@
         </div>
       {% endblock %}
       </div>
+      
+        <script type="text/javascript">
+            jQuery(function () {
+                $('#datetimepicker1').datetimepicker();
+            });
+        </script>
   </body>
 </html>

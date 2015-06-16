@@ -21,10 +21,15 @@ class Event(models.Model):
         (CONCLUDED, _("Concluded")),
     )
 
+    creation_user = models.ForeignKey('auth.User')
+    creation_datetime = models.DateTimeField(auto_now_add=True)
+    last_edition = models.DateTimeField(auto_now=True)
+    
     name = models.CharField(max_length=100)
     datetime = models.DateTimeField()
-    comment = models.TextField()
-    status = models.PositiveIntegerField(choices=STATUS_CHOICES)
+    comment = models.TextField(blank=True, null=True)
+    status = models.PositiveIntegerField(choices=STATUS_CHOICES, default=NOT_CONFIRMED)
+    
 
     class Meta:
         ordering = ("datetime", "name",)

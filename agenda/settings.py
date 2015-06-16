@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     # local apps
+    'profile',
     'schedule',
 )
 
@@ -92,3 +93,5 @@ STATICFILES_DIRS = (
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, "templates"),
 )
+
+AUTH_PROFILE_MODULE = 'profile.UserProfile'
