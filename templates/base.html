@@ -16,19 +16,25 @@
       {% block content %}
         <h1>{% trans "Wellcome to your Agenda" %}</h1>
         <form class="add_event_form" action="." method="post">
+        	{% csrf_token %}
+        	{{ form.non_field_errors }}
        		<div class='col-sm-6'>
-           		<div class="form-group">
-		        	<input name="name" class="event_name form-control" placeholder="{% trans "The name of your event here" %}" />
+           		<div class="form-group{% if form.name.errors %} has-error{% endif %}">
+		        	<input name="name" class="event_name form-control" placeholder="{% trans "The name of your event here" %}" {% if form.name.value %}value="{{ form.name.value }}"{% endif %} />
+	          		{% if form.name.errors %}
+	          		<label class="control-label has-error">{{ form.name.errors }}{% endif %}</label>
         		</div>
         	</div>
        		<div class='col-sm-4'>
-           		<div class="form-group">
+           		<div class="form-group{% if form.datetime.errors %} has-error{% endif %}">
                		<div class='input-group date' id='datetimepicker1'>
-			        	<input name="datetime" class="event_datetime form-control" />
+			        	<input name="datetime" class="event_datetime form-control" {% if form.name.value %}value="{{ form.datetime.value }}"{% endif %} />
                    		<span class="input-group-addon">
                        		<span class="glyphicon glyphicon-calendar"></span>
                     	</span>
                    	</div>
+	          		{% if form.datetime.errors %}
+	          		<label class="control-label">{{ form.datetime.errors }}{% endif %}</label>
         		</div>
         	</div>
        		<div class='col-sm-2'>
