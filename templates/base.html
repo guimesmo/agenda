@@ -1,5 +1,5 @@
 {% load i18n %}<!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="Agenda">
   <head>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-3.3.2-dist/css/bootstrap.min.css">
@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="{{ STATIC_URL }}js/jquery-2.1.1.min.js"></script>
-    <script src="{{ STATIC_URL }}bootstrap-3.3.2-dist/js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}js/angular.min.js"></script>
+    <script src="{{ STATIC_URL }}js/app.js"></script>
+
+    <title>Welcome to your agenda</title>
+
   </head>
   <body>
       <div class="container">
@@ -29,7 +32,7 @@
             <div class='col-md-4'>
                 <div class="form-group{% if form.datetime.errors %} has-error{% endif %}">
                     <div class='input-group date' id='datetimepicker1'>
-                     <input name="datetime" class="event_datetime form-control" {% if form.name.value %}value="{{ form.datetime.value }}"{% endif %} />
+                     <input name="datetime" maxlength="10" class="event_datetime form-control" {% if form.name.value %}value="{{ form.datetime.value }}"{% endif %} />
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar"></span>
                      </span>
@@ -45,60 +48,81 @@
 
         </form>
         </div>
-        <div class="container">
+        <div class="container" ng-controller="EventsListController">
+            <div class="events">
 
-        <div class="event_list delayed">
-            <h4>{% trans "Delayed Jobs" %}</h4>
-            <table class="table">
-                <tr class="danger">
-                {% include "_includes/event_table_header.html" %}
-                </tr>
-                {% for event in delayed %}
-                <tr class="{% cycle "even" event.css_class_by_status %}">
-                {% include "_includes/event_list_row.html" %}
-                </tr>
-                {% empty %}
-                <tr class="info">
-                    <td colspan="4">{% trans "No delays!" %}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        <div class="event_list common">
-            <h4>{% trans "Nexts Jobs" %}</h4>
-            <table class="table">
-                {% include "_includes/event_table_header.html" %}
-                {% for event in nexts %}
-                <tr class="{% cycle "even" event.css_class_by_status %}">
-                {% include "_includes/event_list_row.html" %}
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4">{% trans "No future jobs!" %}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        <div class="event_list info">
-            <h4>{% trans "Latest Jobs" %}</h4>
-            <table class="table">
-                {% include "_includes/event_table_header.html" %}
-                {% for event in concludeds %}
-                {% include "_includes/event_list_row.html" %}
-                {% empty %}
-                <tr>
-                    <td colspan="4">{% trans "No future jobs!" %}</td>
-                </tr>
-                {% endfor %}
-            </table>
+                <div class="event_list delayed">
+                    <h4>{% trans "Delayed Jobs" %}</h4>
+                    <table class="table">
+                        <tr class="danger">
+                        {% include "_includes/event_table_header.html" %}
+                        </tr>
+                        <tr ng-repeat="event in delayed_jobs">
+                            <td>
+                                {[{ event.datetime_repr }]}
+                                <span class="time">
+                                {[{ event.datetime_repr }]}
+                                </span>
+                            </td>
+                            <td>
+                                <strong>{[{  event.name }]}</strong>
+                                {[{ event.comment }]}
+                            </td>
+                            <td>
+                                {[{ event.status }]}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="event_list common">
+                    <h4>{% trans "Nexts Jobs" %}</h4>
+                    <table class="table">
+                        {% include "_includes/event_table_header.html" %}
+                        <tr>
+                            <td>
+                                {{ event.datetime|date:"d/m/Y"}}
+                                <span class="time">
+                                {{ event.datetime|date:"H:i"}}
+                                </span>
+                            </td>
+                            <td>
+                                <strong>{{ event.name }}</strong>
+                                {% if event.comment %}<br />
+                                {{ event.comment|linebreaksbr }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ event.get_status_display }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="event_list info">
+                    <h4>{% trans "Latest Jobs" %}</h4>
+                    <table class="table">
+                        {% include "_includes/event_table_header.html" %}
+                        <tr>
+                            <td>
+                                {{ event.datetime|date:"d/m/Y"}}
+                                <span class="time">
+                                {{ event.datetime|date:"H:i"}}
+                                </span>
+                            </td>
+                            <td>
+                                <strong>{{ event.name }}</strong>
+                                {% if event.comment %}<br />
+                                {{ event.comment|linebreaksbr }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ event.get_status_display }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
       {% endblock %}
       </div>
-
-        <script type="text/javascript">
-            jQuery(function () {
-                $('#datetimepicker1').datetimepicker();
-            });
-        </script>
   </body>
 </html>
