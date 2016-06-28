@@ -3,6 +3,7 @@ import json
 
 from django.http import HttpResponse
 from django.views.generic.edit import FormView
+from django.views.decorators.csrf import csrf_exempt
 
 from schedule.models import Event
 from schedule.forms import EventForm
@@ -25,7 +26,7 @@ class MainPage(FormView):
 
 
 def json_response(qs):
-    fields = ('name', 'datetime_repr', 'comment', 'status')
+    fields = ('id', 'name', 'datetime_repr', 'comment', 'status')
     objects_list = []
     for obj in qs:
         obj_dict = dict()
@@ -49,6 +50,27 @@ def next_events(request):
 def done_events(request):
     events = Event.objects.filter(status=Event.CONCLUDED).order_by('-datetime')[:100]
     return json_response(events)
+
+
+@csrf_exempt
+def event(request):
+    data = json.loads(request.body.decode('utf-8'))
+
+    form = EventForm(data, creation_user=request.user)
+    if not form.is_valid():
+        json_response(form.errors, status_code=400)
+    form.save()
+    return HttpResponse(form.instance.pk)
+
+
+
+@csrf_exempt
+def finish_event(request, event_id):
+    event = Event.objects.get(pk=event_id)
+    data = json.loads(request.body.decode('utf-8'))
+    event.status = data.get('status', event.status)
+    event.save()
+    return HttpResponse(event.pk)
 
 
 home = MainPage.as_view()
