@@ -1,0 +1,8 @@
+{
+  "name": "Minha agenda",
+  "description": "Projeto de agenda Django/AngularJS.",
+  "image": "heroku/python",
+  "repository": "https://github.com/guimesmo/agenda",
+  "keywords": ["python", "django" ],
+  "addons": [ "heroku-postgresql" ]
+}
