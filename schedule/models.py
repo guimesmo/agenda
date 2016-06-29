@@ -39,7 +39,7 @@ class Event(models.Model):
 
     @property
     def datetime_repr(self):
-        return int(self.datetime.timestamp())
+        return self.datetime.isoformat()
 
     def css_class_by_status(self):
         STATUS_CHOICE = {
