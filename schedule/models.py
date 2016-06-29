@@ -39,7 +39,7 @@ class Event(models.Model):
 
     @property
     def datetime_repr(self):
-        return self.datetime.strftime("%d/%m/%y %H:%M")
+        return int(self.datetime.timestamp())
 
     def css_class_by_status(self):
         STATUS_CHOICE = {

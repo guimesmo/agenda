@@ -1,10 +1,161 @@
-<!doctype html>
-<html lang="pt" ng-app="helloWorld">
-    <head>
-        <title>HW</title>
-        <script src="../static/js/angular.min.js"></script>
-    </head>
-    <body>
+{% load i18n %}<!DOCTYPE html>
+<html lang="en" ng-app="Agenda">
+  <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-3.3.2-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-3.3.2-dist/css/bootstrap-theme.min.css">
 
-    </body>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="{{ STATIC_URL }}js/angular.min.js"></script>
+    <script src="{{ STATIC_URL }}js/ngMask.min.js"></script>
+    <script src="{{ STATIC_URL }}js/app.js"></script>
+
+    <title>Welcome to your agenda</title>
+
+  </head>
+  <body ng-controller="EventsListController">
+      {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+            {{ message }}
+        </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+      <div class="container">
+        {% block content %}
+        <div class='text-right'>
+            <div class="panel-default">
+                <div class="panel">
+                    <div class="user-info">
+                        <span class="text-primary">{{ user.get_full_name }}</span> /
+                        <a href="/accounts/logout" class="leave-button">Encerrar sessão</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        	<div class="row">
+        	    <div class='col-md-12'>
+                <h1>Gerencie sua agenda</h1>
+            </div>
+        </div>
+        	{% csrf_token %}
+        	<div class="row">
+        	<form ng-model="event.form" ng-submit="add_event(event)">
+        	    <div class='col-md-6'>
+        	        <div class="form-group">
+                    <input name="name" ng-model="event.name" class="event_name form-control" placeholder="Digite o nome da atividade" />
+                </div>
+            </div>
+            <div class='col-md-2'>
+                <div class="form-group">
+                    <div class="input-group date">
+                     <input name="date" ng-model="event.date" mask="39/19/9999" maxlength="10" class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    </div>
+               </div>
+            </div>
+            <div class='col-md-2'>
+                <div class="form-group">
+                    <div class="input-group time">
+                     <input name="time" ng-model="event.time" mask="39:69" maxlength="10" class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-time"></span>
+                        </span>
+                    </div>
+               </div>
+            </div>
+           <div class='col-md-2'>
+               <button class="btn btn-primary add_button form-control">Adicionar</button>
+           </div>
+       </form>
+       </div>
+
+        </div>
+        <div class="container">
+            <div class="events">
+                <div class="event_list common">
+                    <h4>Próximos</h4>
+                    <table class="table">
+                        <tr class="bg-primary">
+                            <th class="date">Data</th>
+                            <th class="event">Atividade</th>
+                            <th class="status text-center">Status</th>
+                        </tr>
+                        <tr ng-repeat="event in next_jobs">
+                            <td>
+                                {[{ event.datetime_repr | date:'dd/MM/yyyy' }]}<br />
+                                <span class="time">
+                                {[{ event.datetime_repr| date:'HH:mm' }]}
+                                </span>
+                            </td>
+                            <td>
+                                <strong>{[{  event.name }]}</strong>
+                                {[{ event.comment }]}
+                            </td>
+                            <td class="text-center">
+                                <button class="btn" title="cancelar" ng-click="cancel_event(event.id)"><i class="glyphicon glyphicon-remove"></i></button>
+                                <button class="btn" title="finalizar" ng-click="confirm_event(event.id)"><i class="glyphicon glyphicon-ok"></i></button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="event_list delayed">
+                    <h4>Atrasados</h4>
+                    <table class="table">
+                        <tr class="danger">
+                            <th class="date">Data</th>
+                            <th class="event">Atividade</th>
+                            <th class="status text-center">Status</th>
+                        </tr>
+                        <tr ng-repeat="event in delayed_jobs">
+                            <td>
+                                {[{ event.datetime_repr | date:'dd/MM/yyyy' }]}<br />
+                                <span class="time">
+                                {[{ event.datetime_repr| date:'HH:mm' }]}
+                                </span>
+                            </td>
+                            <td>
+                                <strong>{[{  event.name }]}</strong>
+                                {[{ event.comment }]}
+                            </td>
+                            <td class="text-center">
+                                <button class="btn" title="cancelar" ng-click="cancel_event(event.id)"><i class="glyphicon glyphicon-remove"></i></button>
+                                <button class="btn" title="finalizar" ng-click="confirm_event(event.id)"><i class="glyphicon glyphicon-ok"></i></button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="event_list info">
+                    <h4>Últimos finalizados</h4>
+                    <table class="table">
+                        <tr class="bg-info">
+                            <th class="date">Data</th>
+                            <th class="event">Atividade</th>
+                        </tr>
+                        <tr ng-repeat="event in done_jobs">
+                            <td>
+                                {[{ event.datetime_repr | date:'dd/MM/yyyy' }]}<br />
+                                <span class="time">
+                                {[{ event.datetime_repr| date:'HH:mm' }]}
+                                </span>
+                            </td>
+                            <td>
+                                <strong>{[{  event.name }]}</strong>
+                                {[{ event.comment }]}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+      {% endblock %}
+      </div>
+  </body>
 </html>

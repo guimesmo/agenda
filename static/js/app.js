@@ -7,8 +7,9 @@ Agenda.config(function($interpolateProvider){
 
 
 
-Agenda.controller('EventsListController', function EventsListController($scope, $http) {
+Agenda.controller('EventsListController', function EventsListController($scope, $http, $interval) {
     function load_table(){
+        $http.get("/update_events/");
         var delayed_jobs = $http.get("/delayed_events/").success(
             function(data){
                 $scope.delayed_jobs = data;
@@ -26,9 +27,11 @@ Agenda.controller('EventsListController', function EventsListController($scope, 
         );
     };
 
+
+    $interval(function(){$http.get("/update_events/")}, 60000);
+
     // add event
     $scope.add_event = function(event){
-        console.log(1);
         $http.post(
             '/event/',
             {
