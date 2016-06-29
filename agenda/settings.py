@@ -62,8 +62,12 @@ WSGI_APPLICATION = 'agenda.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'agenda_db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DATABASE_NAME', ''),
+        'USER': os.environ.get('DATABASE_USER', ''),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+        'HOST': os.environ.get('DATABASE_HOST', ''),
+        'PORT': os.environ.get('DATABASE_PORT', ''),
     }
 }
 
@@ -96,3 +100,8 @@ TEMPLATE_DIRS = (
 )
 
 AUTH_PROFILE_MODULE = 'profile.UserProfile'
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
