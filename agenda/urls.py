@@ -21,7 +21,7 @@ urlpatterns = patterns('',
 
     # account actions
     url(r'^accounts/login/$', 'accounts.views.login_view'),
-    url(r'^accounts/logout/$', 'accounts.views.logout'),
+    url(r'^accounts/logout/$', 'accounts.views.logout_view'),
     url(r'^accounts/register/$', 'accounts.views.register_user'),
 
     # django admin
