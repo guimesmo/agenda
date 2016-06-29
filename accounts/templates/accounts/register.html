@@ -1,0 +1,51 @@
+{% load i18n %}<!DOCTYPE html>
+<html lang="en" ng-app="Agenda">
+  <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-3.3.2-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-3.3.2-dist/css/bootstrap-theme.min.css">
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
+
+    <title>Agenda - Crie sua conta</title>
+
+  </head>
+  <body ng-controller="EventsListController">
+      <div class="container">
+        {% block content %}
+        <div class="account-page-outer">
+            <div class="col-md-6 col-md-offset-3">
+            <h1>{% trans "Wellcome to your Agenda" %}</h1>
+            <form action="." method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input name="first_name" value="{{ form.first_name.value|default_if_none:"" }}" class="form-control input-text" placeholder="Nome" />
+                    <div class="field-errors">{{ form.first_name.errors }}</div>
+                </div>
+                <div class="form-group">
+                    <input name="last_name" value="{{ form.last_name.value|default_if_none:"" }}" class="form-control input-text" placeholder="Sobrenome" />
+                    <div class="field-errors">{{ form.last_name.errors }}</div>
+                </div>
+                <div class="form-group">
+                    <input name="username" value="{{ form.username.value|default_if_none:"" }}" class="form-control input-text" placeholder="Nome de usuário" />
+                    <div class="field-errors">{{ form.username.errors }}</div>
+                </div>
+                <div class="form-group">
+                    <input name="email" value="{{ form.email.value|default_if_none:"" }}" class="form-control input-text" placeholder="Email" />
+                    <div class="field-errors">{{ form.email.errors }}</div>
+                </div>
+                <div class="form-group">
+                    <input name="password1" type="password" value="" class="form-control input-text" placeholder="Senha" />
+                    <div class="field-errors">{{ form.password1.errors }}</div>
+                </div>
+                <div class="form-group">
+                    <input name="password2" type="password" value="" class="form-control input-text" placeholder="Confirme sua senha" />
+                    <div class="field-errors">{{ form.password2.errors }}</div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+            </form>
+        </div>
+      {% endblock %}
+      </div>
+  </body>
+</html>
