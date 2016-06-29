@@ -9,7 +9,7 @@ Agenda.config(function($interpolateProvider){
 
 Agenda.controller('EventsListController', function EventsListController($scope, $http) {
     function load_table(){
-        var delayed_jobs = $http.get("http://localhost:8000/delayed_events/").success(
+        var delayed_jobs = $http.get("/delayed_events/").success(
             function(data){
                 $scope.delayed_jobs = data;
             }
