@@ -77,7 +77,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'pt_BR'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Americas/Sao_Paulo'
 
 USE_I18N = True
 
