@@ -1,88 +1,65 @@
 # -*- coding: utf-8 -*-
-import json
 
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
+from django.http import Http404
+
+from rest_framework.renderers import JSONRenderer
+from rest_framework import generics
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Event
-from .forms import EventForm
-from .tasks import update_events_task
+from .serializers import EventSerializer
+from .utils import request_filter_factory
 
 
-def json_response(qs):
-    fields = ('id', 'name', 'datetime_repr', 'comment', 'status')
-    objects_list = []
-    for obj in qs:
-        obj_dict = dict()
-        for field in fields:
-            obj_dict[field] = getattr(obj, field)
-        objects_list.append(obj_dict)
-
-    return HttpResponse(json.dumps(objects_list))
-
-@login_required
-def delayed_events(request):
-    events = Event.objects.filter(
-        status=Event.DELAYED,
-        creation_user=request.user
-    )
-    return json_response(events)
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
 
 
-@login_required
-def next_events(request):
-    events = Event.objects.filter(
-        status__in=(Event.CONFIRMED, Event.NOT_CONFIRMED),
-        creation_user=request.user
-    )
-    return json_response(events)
+class EventsListSet(generics.ListAPIView):
+    serializer_class = EventSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        list_filter = request_filter_factory(
+            self.request.query_params.get('status'))
+
+        return Event.objects.filter(creation_user=user, status__in=list_filter)
+
+    def put(self, request):
+        data = self.request.data
+        serializer = EventSerializer(data)
+        if serializer.is_valid():
+            serializer.create()
+            return JSONResponse(serializer.data)
+        return JSONResponse(serializer.errors, status_code=400)
 
 
-@login_required
-def done_events(request):
-    events = Event.objects.filter(
-        status=Event.CONCLUDED,
-        creation_user=request.user
-    ).order_by('-datetime')
-    return json_response(events)
+class EventDetail(APIView):
 
+    def get_object(self, pk):
+        try:
+            return Event.objects.get(pk=pk, creation_user=self.request.user)
+        except Event.DoesNotExist:
+            raise Http404
 
-@login_required
-def canceled_evevnts(request):
-    events = Event.objects.filter(
-        status=Event.CANCELED,
-        creation_user=request.user
-    ).order_by('-datetime')
-    return json_response(events)
+    def post(self, request, pk):
+        data = self.request.data
+        serializer = EventSerializer(data)
+        if serializer.is_valid():
+            serializer.update()
+            return JSONResponse(serializer.data)
+        return JSONResponse(serializer.errors, status_code=400)
 
-
-@login_required
-@csrf_exempt
-def event(request):
-    data = json.loads(request.body.decode('utf-8'))
-
-    form = EventForm(data, creation_user=request.user)
-    if not form.is_valid():
-        json_response(form.errors, status_code=400)
-    form.save()
-    return HttpResponse(form.instance.pk)
-
-
-@login_required
-@csrf_exempt
-def finish_event(request, event_id):
-    event = get_object_or_404(Event,
-        creation_user=request.user,
-        pk=event_id)
-    data = json.loads(request.body.decode('utf-8'))
-    event.status = data.get('status', event.status)
-    event.save()
-    return HttpResponse(event.pk)
-
-
-@login_required
-def update_events(request):
-    update_events_task(request.user)
-    return HttpResponse('1')
+    def delete(self, request, pk):
+        event = self.get_object(pk, user=request.user)
+        event.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

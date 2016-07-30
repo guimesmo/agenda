@@ -3,18 +3,13 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
+from schedule.views import EventsListSet
+
 urlpatterns = patterns('',
     url(r'^$', 'agenda.views.home', name='home'),
 
     # event api
-    url(r'^next_events/$', 'schedule.views.next_events', name='next_events'),
-    url(r'^done_events/$', 'schedule.views.done_events', name='done_events'),
-    url(r'^delayed_events/$', 'schedule.views.delayed_events',
-        name='delayed_events'),
-    url(r'^finish_event/(?P<event_id>\d+)$', 'schedule.views.finish_event',
-        name='finish_event'),
-    url(r'^update_events/$', 'schedule.views.update_events',
-        name='update_events'),
+    url(r'events/$', EventsListSet.as_view()),
 
     # event actions
     url(r'^event/$', 'schedule.views.event'),

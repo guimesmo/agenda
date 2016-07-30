@@ -7,6 +7,12 @@ table th.event{
 table th.status{
     width: 120px;
 }
+
+table tr:hover{
+    background: #f6f6f6;
+    cursor: pointer;
+}
+
 .event_list{
     padding: 5px;
     margin-bottom: 15px;
