@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from django.http import HttpResponse
+from django.core.exceptions import ValidationError
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404
 
-from rest_framework.renderers import JSONRenderer
+
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.response import Response
@@ -12,16 +14,6 @@ from rest_framework.views import APIView
 from .models import Event
 from .serializers import EventSerializer
 from .utils import request_filter_factory
-
-
-class JSONResponse(HttpResponse):
-    """
-    An HttpResponse that renders its content into JSON.
-    """
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
 
 
 class EventsListSet(generics.ListAPIView):
@@ -34,16 +26,18 @@ class EventsListSet(generics.ListAPIView):
 
         return Event.objects.filter(creation_user=user, status__in=list_filter)
 
-    def put(self, request):
+    def post(self, request):
         data = self.request.data
         serializer = EventSerializer(data)
         if serializer.is_valid():
             serializer.create()
-            return JSONResponse(serializer.data)
-        return JSONResponse(serializer.errors, status_code=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
 
 class EventDetail(APIView):
+
+    seerializer_class = EventSerializer
 
     def get_object(self, pk):
         try:
@@ -51,15 +45,33 @@ class EventDetail(APIView):
         except Event.DoesNotExist:
             raise Http404
 
-    def post(self, request, pk):
-        data = self.request.data
-        serializer = EventSerializer(data)
+    def get(self, request, pk):
+        """Gets event object"""
+        event = self.get_object(pk)
+        return Response(EventSerializer(event).data)
+
+    def patch(self, request, pk):
+        """Update event status"""
+        event = self.get_object(pk)
+        try:
+            event.set_status(request.data.get('status'))
+        except ValidationError as e:
+            return Response(e.message, status=400)
+        event.save()
+        return Response(EventSerializer(event))
+
+    def put(self, request, pk):
+        """Update event data"""
+        serializer = EventSerializer(self.request.data)
         if serializer.is_valid():
             serializer.update()
-            return JSONResponse(serializer.data)
-        return JSONResponse(serializer.errors, status_code=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
+    @method_decorator(csrf_exempt)
     def delete(self, request, pk):
-        event = self.get_object(pk, user=request.user)
-        event.delete()
+        """Cancel event (by changing it status)"""
+        event = self.get_object(pk)
+        event.cancel()
+        event.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

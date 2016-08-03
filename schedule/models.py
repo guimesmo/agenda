@@ -1,6 +1,7 @@
 # -*- coding utf-8 -*-
 
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 
 
@@ -42,16 +43,18 @@ class Event(models.Model):
     def datetime_repr(self):
         return self.datetime.isoformat()
 
-    def css_class_by_status(self):
-        STATUS_CHOICE = {
-            self.NOT_CONFIRMED: "",
-            self.CONFIRMED: "active",
-            self.DELAYED: "danger",
-            self.CANCELLED: "warning",
-            self.CONCLUDED: "active",
-        }
-        return STATUS_CHOICE[self.status]
+    def cancel(self):
+        self.status = self.CANCELLED
 
+    def set_status(self, status_code):
+        try:
+            status_code = int(status_code)
+        except (TypeError, ValueError):
+            raise ValidationError("invalid status code")
+        if status_code in (dict(self.STATUS_CHOICES).keys()):
+            self.status = status_code
+        else:
+            raise ValidationError("invalid status code")
 
 CASH = 100
 DEBIT_CARD = 101

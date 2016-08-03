@@ -3,13 +3,14 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
-from schedule.views import EventsListSet
+from schedule.views import EventsListSet, EventDetail
 
 urlpatterns = patterns('',
     url(r'^$', 'agenda.views.home', name='home'),
 
     # event api
     url(r'events/$', EventsListSet.as_view()),
+    url(r'events/(?P<pk>\d+)$', EventDetail.as_view()),
 
     # account actions
     url(r'^accounts/login/$', 'accounts.views.login_view'),
