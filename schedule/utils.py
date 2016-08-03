@@ -11,7 +11,7 @@ def request_filter_factory(filter_string):
         'next': (Event.NOT_CONFIRMED, Event.CONFIRMED,),
         'delayed': (Event.DELAYED,),
         'cancelled': (Event.CANCELLED,),
-        'done': (Event.CONCLUDED)
+        'done': (Event.CONCLUDED,)
         }
     try:
         return default[filter_string]

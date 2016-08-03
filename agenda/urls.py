@@ -11,9 +11,6 @@ urlpatterns = patterns('',
     # event api
     url(r'events/$', EventsListSet.as_view()),
 
-    # event actions
-    url(r'^event/$', 'schedule.views.event'),
-
     # account actions
     url(r'^accounts/login/$', 'accounts.views.login_view'),
     url(r'^accounts/logout/$', 'accounts.views.logout_view'),
