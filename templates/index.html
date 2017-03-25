@@ -4,12 +4,14 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-3.3.2-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}bootstrap-3.3.2-dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}components/angularjs-datepicker/dist/angular-datepicker.min.css">
 
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="{{ STATIC_URL }}js/angular.min.js"></script>
     <script src="{{ STATIC_URL }}js/ngMask.min.js"></script>
+    <script src="{{ STATIC_URL }}components/angularjs-datepicker/dist/angular-datepicker.min.js"></script>
     <script src="{{ STATIC_URL }}js/app.js"></script>
 
     <title>Welcome to your agenda</title>
@@ -54,7 +56,9 @@
             <div class='col-md-2'>
                 <div class="form-group">
                     <div class="input-group date">
-                     <input name="date" ng-model="event.date" mask="39/19/9999" maxlength="10" class="form-control" />
+                    <datepicker date-format="dd/MM/yyyy" selector="form-control">
+                        <input name="date" ng-model="date" type="text" class="form-control"/>
+                      </datepicker>
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -64,7 +68,7 @@
             <div class='col-md-2'>
                 <div class="form-group">
                     <div class="input-group time">
-                     <input name="time" ng-model="event.time" mask="39:69" maxlength="10" class="form-control" />
+                     <input name="time" ng-model="event.time" mask="39:69" maxlength="10" class="form-control" placeholder="00:00" />
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-time"></span>
                         </span>

@@ -1,4 +1,4 @@
-var Agenda = angular.module('Agenda', ['ngMask']);
+var Agenda = angular.module('Agenda', ['ngMask', '720kb.datepicker']);
 
 Agenda.config(function($interpolateProvider, $httpProvider){
   $interpolateProvider.startSymbol('{[{');
