@@ -19,5 +19,6 @@
   "bugs": {
     "url": "https://github.com/guimesmo/agenda/issues"
   },
-  "homepage": "https://github.com/guimesmo/agenda#readme"
+  "homepage": "https://github.com/guimesmo/agenda#readme",
+  "postinstall": "bower install && grunt build"
 }
