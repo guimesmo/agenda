@@ -20,10 +20,11 @@
   },
   "homepage": "https://github.com/guimesmo/agenda#readme",
   "postinstall": "bower install && grunt build",
-  "dependencies": {
-    "bower": "0.6.x"
+  "engines": {
+    "node": "6.9.x",
+    "bower": "1.8.x",
   },
   "scripts": {
-    "postinstall": "./node_modules/bower/bin/bower install"
+    "postinstall": "bower install"
   }
 }
