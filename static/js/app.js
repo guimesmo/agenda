@@ -10,17 +10,17 @@ Agenda.config(function($interpolateProvider){
 Agenda.controller('EventsListController', function EventsListController($scope, $http, $interval) {
     function load_table(){
         $http.get("/update_events/");
-        var delayed_jobs = $http.get("/delayed_events/").success(
+        var delayed_jobs = $http.get("/events/?status=delayed").success(
             function(data){
                 $scope.delayed_jobs = data;
             }
         );
-        var next_jobs = $http.get("/next_events/").success(
+        var next_jobs = $http.get("/events/?status=next").success(
             function(data){
                 $scope.next_jobs = data;
             }
         );
-        var done_jobs = $http.get("/done_events/").success(
+        var done_jobs = $http.get("/events/?status=done").success(
             function(data){
                 $scope.done_jobs = data;
             }
@@ -33,7 +33,7 @@ Agenda.controller('EventsListController', function EventsListController($scope, 
     // add event
     $scope.add_event = function(event){
         $http.post(
-            '/event/',
+            '/events/',
             {
                 name: event.name,
                 date: event.date,
@@ -50,12 +50,12 @@ Agenda.controller('EventsListController', function EventsListController($scope, 
 
     // button actions
     $scope.cancel_event = function(event_id){
-        $http.post("/finish_event/" + event_id, {status: 104}).success(function(){
+        $http.delete("/events/" + event_id).success(function(){
             load_table();
         });
     };
     $scope.confirm_event = function(event_id){
-        $http.post("/finish_event/" + event_id, {status: 105}).success(function(){
+        $http.patch("/events/" + event_id, {status: 105}).success(function(){
             load_table();
         });
     };
