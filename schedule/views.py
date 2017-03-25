@@ -28,9 +28,9 @@ class EventsListSet(generics.ListAPIView):
 
     def post(self, request):
         data = self.request.data
-        serializer = EventSerializer(data)
+        serializer = EventSerializer(data=data, context={'request': request})
         if serializer.is_valid():
-            serializer.create()
+            serializer.create(validated_data=serializer.validated_data)
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
@@ -62,7 +62,7 @@ class EventDetail(APIView):
 
     def put(self, request, pk):
         """Update event data"""
-        serializer = EventSerializer(self.request.data)
+        serializer = EventSerializer(data=self.request.data, context={'request': request})
         if serializer.is_valid():
             serializer.update()
             return Response(serializer.data)
