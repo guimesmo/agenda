@@ -1,6 +1,5 @@
 {
   "name": "agenda",
-  "description": "Agenda é um projeto para gerenciamento simples de agendas para uso em ambientes com atendimento a pessoas. O Principal objetivo do projeto é servir como estudo de ferramentas em python integradas com django.",
   "main": "static/js/app.js",
   "authors": [
     "Luiz Guilherme Silva <luizguilhermeprog@gmail.com>"
