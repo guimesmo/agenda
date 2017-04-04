@@ -44,7 +44,8 @@ Agenda.controller('EventsListController', function EventsListController($scope, 
         ).success(
             function(){
                 load_table();
-        });
+              }
+        );
     };
 
     // init table
@@ -54,7 +55,7 @@ Agenda.controller('EventsListController', function EventsListController($scope, 
     $scope.cancel_event = function(event_id){
         $http.delete("/events/" + event_id).success(function(){
             load_table();
-            
+
         });
     };
     $scope.confirm_event = function(event_id){

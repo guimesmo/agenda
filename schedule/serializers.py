@@ -19,11 +19,13 @@ class EventSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'datetime_repr', 'status')
 
     def validate(self, data):
-        if data.get('date') and data.get('time'):
+        if None not in (data.get('date'), data.get('time'),):
             data['event_datetime'] = datetime.datetime.combine(
                 data['date'],
                 data['time']
                 )
+        else:
+            raise serializers.ValidationError("Data e hora são obrigatórios")
         return data
 
     def create(self, validated_data):
