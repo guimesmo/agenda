@@ -93,10 +93,11 @@ DATE_INPUT_FORMATS = ('%d/%m/%Y', '%Y-%m-%d')
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, "files")
+
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
-STATIC_ROOT = os.path.join(BASE_DIR, "")
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, "templates"),
