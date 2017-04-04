@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "static/js/app.js",
   "dependencies": {
+    "bower": "1.8.x",
     "angularjs-datepicker": "^2.1.15"
   },
   "devDependencies": {},
@@ -20,11 +21,6 @@
   },
   "homepage": "https://github.com/guimesmo/agenda#readme",
   "postinstall": "bower install && grunt build",
-  "engines": {
-    "node": "6.9.x",
-    "npm": "4.4.4",
-    "bower": "1.8.x"
-  },
   "scripts": {
     "postinstall": "bower install"
   }
