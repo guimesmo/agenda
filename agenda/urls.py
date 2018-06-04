@@ -1,23 +1,26 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
 from schedule.views import EventsListSet, EventDetail
 
-urlpatterns = patterns('',
-    url(r'^$', 'agenda.views.home', name='home'),
+from agenda import views as agenda_views
+from accounts import views as accounts_views
 
-    # event api
-    url(r'events/$', EventsListSet.as_view()),
-    url(r'events/(?P<pk>\d+)$', EventDetail.as_view()),
 
-    # account actions
-    url(r'^accounts/login/$', 'accounts.views.login_view'),
-    url(r'^accounts/logout/$', 'accounts.views.logout_view'),
-    url(r'^accounts/register/$', 'accounts.views.register_user'),
+urlpatterns = [
+               url(r'^$', agenda_views.home, name='home'),
 
-    # django admin
-    url(r'^admin/', include(admin.site.urls)
-    ),
-) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+               # event api
+               url(r'events/$', EventsListSet.as_view()),
+               url(r'events/(?P<pk>\d+)$', EventDetail.as_view()),
+
+               # account actions
+               url(r'^accounts/login/$', accounts_views.login_view),
+               url(r'^accounts/logout/$', accounts_views.logout_view),
+               url(r'^accounts/register/$', accounts_views.register_user),
+
+               # django admin
+               url(r'^admin/', admin.site.urls),
+               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

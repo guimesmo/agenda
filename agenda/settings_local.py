@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from .settings import *
+
+DEBUG = True
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DATABASES = {
