@@ -58,7 +58,7 @@ class EventDetail(APIView):
         except ValidationError as e:
             return Response(e.message, status=400)
         event.save()
-        return Response(EventSerializer(event))
+        return Response(EventSerializer(event).data)
 
     def put(self, request, pk):
         """Update event data"""

@@ -1,3 +1,3 @@
 # requirements for running agenda
-Django==1.10
-djangorestframework
+Django==2.0.6
+djangorestframework==3.8.2

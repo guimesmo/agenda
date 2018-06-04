@@ -22,7 +22,7 @@ class Event(models.Model):
         (CONCLUDED, _("Concluded")),
     )
 
-    creation_user = models.ForeignKey('auth.User')
+    creation_user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     creation_datetime = models.DateTimeField(auto_now_add=True)
     last_edition = models.DateTimeField(auto_now=True)
 
@@ -70,7 +70,7 @@ PAYMENT_METHODS = (
 
 
 class Payment(models.Model):
-    event = models.ForeignKey(Event)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     value = models.DecimalField(max_digits=10, decimal_places=2)
     method = models.PositiveIntegerField(choices=PAYMENT_METHODS)
     additional_comments = models.CharField(max_length=100)
